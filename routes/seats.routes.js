@@ -1,6 +1,7 @@
 const express = require('express');
 const seatsRouter = express.Router();
 const db = require('../db/db.js');
+const { v4: uuidv4 } = require('uuid');
 
 seatsRouter.get('/seats', (req, res) => {
   res.json(db.seats);
@@ -20,9 +21,14 @@ seatsRouter.post('/seats', (req, res) => {
   if (!day || !seat || !client || !email) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
-  const newSeat = { id: uuidv4(), day, seat, client, email };
-  db.seats.push(newSeat);
-  res.status(201).json(newSeat);
+  const checkSeat = db.seats.find(i => i.seat === seat && i.day === day);
+  if(!checkSeat){
+    const newSeat = { id: uuidv4(), day, seat, client, email };
+    db.seats.push(newSeat);
+    res.status(201).json(newSeat);
+  } else {
+    res.status(409).json({ message: "The slot is already taken..." });
+  }
 });
 
 seatsRouter.put('/seats/:id', (req, res) => {
