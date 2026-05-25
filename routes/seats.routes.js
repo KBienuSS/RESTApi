@@ -1,6 +1,6 @@
 const express = require('express');
 const seatsRouter = express.Router();
-const SeatController = require('../controllers/seats.controller');
+const SeatController = require('../controllers/seat.controller');
 
 seatsRouter.get('/seats', SeatController.getAll);
 seatsRouter.get('/seats/:id', SeatController.getById);

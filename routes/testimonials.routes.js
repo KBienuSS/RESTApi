@@ -1,6 +1,6 @@
 const express = require('express');
 const testimonialsRouter = express.Router();
-const TestimonialController = require('../controllers/testimonials.controller');
+const TestimonialController = require('../controllers/testimonial.controller');
 
 testimonialsRouter.get('/testimonials', TestimonialController.getAll);
 testimonialsRouter.get('/testimonials/random', TestimonialController.getRandom);
