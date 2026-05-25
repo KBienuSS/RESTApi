@@ -11,7 +11,7 @@ const seatsRoutes = require('./routes/seats.routes.js');
 
 async function startServer() {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/NewWaveDB');
+    await mongoose.connect('mongodb+srv://bienius234_db_user:MsU5RMRvbEHQlkrq@cluster0.h8jora6.mongodb.net/?appName=Cluster0');
     console.log('Successfully connected to the database');
 
     const app = express();
@@ -35,9 +35,10 @@ async function startServer() {
     app.use('/api', concertsRoutes);
     app.use('/api', seatsRoutes);
 
-    io.on('connection', (sock) =>{
-      console.log("New Socket!");
-      sock.emit('seatsUpdated', db.seats);
+    io.on('connection', async (sock) => {
+      console.log('New Socket!');
+      const seats = await Seat.find();
+      sock.emit('seatsUpdated', seats);
     });
 
     app.get('/*splat', (req, res) => {
