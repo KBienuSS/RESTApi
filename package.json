@@ -2,6 +2,8 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "helmet": "3.21.1",
+    "mongo-sanitize": "1.0.1",
     "mongoose": "^9.6.2",
     "nodemon": "^3.1.14",
     "socket.io": "^4.8.3",

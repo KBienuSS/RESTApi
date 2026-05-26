@@ -2,23 +2,29 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
 const socket = require('socket.io');
+const helmet = require('helmet');
 
 const testimonialsRoutes = require('./routes/testimonials.routes.js');
 const concertsRoutes = require('./routes/concerts.routes.js');
 const seatsRoutes = require('./routes/seats.routes.js');
+const Seat = require('./models/seat.model.js'); // <-- dodany import
 
 async function startServer() {
   try {
-    await mongoose.connect('mongodb+srv://bienius234_db_user:MsU5RMRvbEHQlkrq@cluster0.h8jora6.mongodb.net/?appName=Cluster0');
+    const dbURI = process.env.NODE_ENV === 'production'
+      ? `mongodb+srv://tester:${process.env.DB_PASS}@cluster0.tvjci.mongodb.net/BulletinBoard?retryWrites=true&w=majority`
+      : 'mongodb://localhost:27017/bulletinBoard';
+
+    await mongoose.connect(dbURI);
     console.log('Successfully connected to the database');
 
     const app = express();
 
+    app.use(helmet());
     app.use(cors());
-    app.use(express.static(path.join(__dirname, '/client/build')));
     app.use(express.json());
+    app.use(express.static(path.join(__dirname, '/client/build')));
 
     const server = app.listen(8000, () => {
       console.log('Server is running on port: 8000');
@@ -43,10 +49,6 @@ async function startServer() {
 
     app.get('/*splat', (req, res) => {
       res.sendFile(path.join(__dirname, '/client/build/index.html'));
-    });
-
-    app.use((req, res) => {
-      res.status(404).json({ message: 'Not found...' });
     });
 
   } catch (err) {
